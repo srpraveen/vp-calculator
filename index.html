@@ -609,4 +609,162 @@
             });
         }
     </script>
+	<script>
+// Update checker and installer
+let pressTimer;
+let updateWorker = null;
+let progressBar = null;
+let pressStartTime;
+const PRESS_DURATION = 10000; // 10 seconds
+
+// Function to check for updates
+async function checkForUpdates() {
+    try {
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        await registration.update();
+        
+        if (registration.waiting) {
+            showUpdateDialog();
+            return true;
+        }
+        
+        registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            updateWorker = newWorker;
+            
+            newWorker.addEventListener('statechange', () => {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    showUpdateDialog();
+                }
+            });
+        });
+        
+        return false;
+    } catch (error) {
+        console.error('Error checking for updates:', error);
+        return false;
+    }
+}
+
+// Function to show update dialog
+function showUpdateDialog() {
+    if (confirm('A new version is available! Would you like to update?')) {
+        updateWorker.postMessage({ type: 'SKIP_WAITING' });
+        window.location.reload();
+    }
+}
+
+// Create and update progress bar
+function createProgressBar(titleElement) {
+    progressBar = document.createElement('div');
+    progressBar.style.position = 'absolute';
+    progressBar.style.bottom = '0';
+    progressBar.style.left = '0';
+    progressBar.style.height = '3px';
+    progressBar.style.backgroundColor = '#2563eb';
+    progressBar.style.width = '0';
+    progressBar.style.transition = 'width 0.1s linear';
+    titleElement.style.position = 'relative';
+    titleElement.appendChild(progressBar);
+}
+
+function updateProgress() {
+    if (pressStartTime && progressBar) {
+        const elapsedTime = Date.now() - pressStartTime;
+        const progress = Math.min((elapsedTime / PRESS_DURATION) * 100, 100);
+        progressBar.style.width = `${progress}%`;
+        
+        if (elapsedTime < PRESS_DURATION) {
+            requestAnimationFrame(updateProgress);
+        }
+    }
+}
+
+function startProgress(titleElement) {
+    if (!progressBar) {
+        createProgressBar(titleElement);
+    }
+    pressStartTime = Date.now();
+    progressBar.style.width = '0';
+    updateProgress();
+}
+
+function resetProgress() {
+    if (progressBar) {
+        progressBar.style.width = '0';
+    }
+    pressStartTime = null;
+}
+
+// Add event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    const titleElement = document.querySelector('.card-title');
+    let isPressed = false;
+    
+    // Touch events for mobile
+    titleElement.addEventListener('touchstart', (e) => {
+        isPressed = true;
+        startProgress(titleElement);
+        pressTimer = setTimeout(() => {
+            checkForUpdates();
+            resetProgress();
+        }, PRESS_DURATION);
+    });
+    
+    titleElement.addEventListener('touchend', () => {
+        isPressed = false;
+        clearTimeout(pressTimer);
+        resetProgress();
+    });
+    
+    // Mouse events for desktop
+    titleElement.addEventListener('mousedown', (e) => {
+        // Check if it's a right-click (button 2)
+        if (e.button === 2) {
+            e.preventDefault();
+            checkForUpdates();
+            return;
+        }
+        
+        isPressed = true;
+        startProgress(titleElement);
+        pressTimer = setTimeout(() => {
+            checkForUpdates();
+            resetProgress();
+        }, PRESS_DURATION);
+    });
+    
+    titleElement.addEventListener('mouseup', () => {
+        isPressed = false;
+        clearTimeout(pressTimer);
+        resetProgress();
+    });
+    
+    titleElement.addEventListener('mouseleave', () => {
+        if (isPressed) {
+            isPressed = false;
+            clearTimeout(pressTimer);
+            resetProgress();
+        }
+    });
+    
+    // Prevent context menu on right-click
+    titleElement.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+    
+    // Keyboard shortcut (Ctrl + Shift + U)
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'u') {
+            e.preventDefault();
+            checkForUpdates();
+        }
+    });
+    
+    // Listen for service worker updates
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+    });
+});
+</script>
 </body>

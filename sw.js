@@ -1,4 +1,5 @@
-const CACHE_NAME = 'vp-calculator-v1';
+// First, modify the service worker (sw.js)
+const CACHE_NAME = 'vp-calculator-v2'; // Increment version number
 const ASSETS_TO_CACHE = [
     'index.html',
     'manifest.json',
@@ -14,20 +15,27 @@ self.addEventListener('install', (event) => {
                 return cache.addAll(ASSETS_TO_CACHE);
             })
     );
+    // Force the waiting service worker to become the active service worker
+    self.skipWaiting();
 });
 
 // Activate Service Worker
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
+        Promise.all([
+            // Clean up old caches
+            caches.keys().then((cacheNames) => {
+                return Promise.all(
+                    cacheNames.map((cacheName) => {
+                        if (cacheName !== CACHE_NAME) {
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            }),
+            // Tell the active service worker to take immediate control of all clients
+            self.clients.claim()
+        ])
     );
 });
 
@@ -42,4 +50,11 @@ self.addEventListener('fetch', (event) => {
                 return caches.match('index.html');
             })
     );
+});
+
+// Listen for messages from the client
+self.addEventListener('message', (event) => {
+    if (event.data === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
 });
