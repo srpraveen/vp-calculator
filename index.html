@@ -190,12 +190,41 @@
             display: block;
         }
     </style>
+	<style>
+        /* Keep your existing styles and add these new ones */
+        .interactive-title {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            padding: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .interactive-title:hover {
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background-color: #2563eb;
+            width: 0;
+            transition: width 0.1s linear;
+        }
+
+        /* Keep all your other existing styles */
     </style>
 </head>
 <body>
 	<div class="container">
-        <div class="page-title">
+        <!-- Replace your existing page title div with this -->
+        <div class="page-title interactive-title">
             Corrugation Calculator
+            <div class="progress-bar"></div>
         </div>
 <!-- Top Paper Card -->
         <div class="card">
@@ -595,32 +624,17 @@
             `;
         }
 	</script>
-	<script>
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then((registration) => {
-                        console.log('ServiceWorker registered:', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.log('ServiceWorker registration failed:', error);
-                    });
-            });
-        }
-    </script>
-	<script>
+<script>
 // Update checker and installer
 let pressTimer;
 let updateWorker = null;
-let progressBar = null;
 let pressStartTime;
 const PRESS_DURATION = 10000; // 10 seconds
 
 // Function to check for updates
 async function checkForUpdates() {
     try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
+        const registration = await navigator.serviceWorker.register('sw.js');
         await registration.update();
         
         if (registration.waiting) {
@@ -649,47 +663,39 @@ async function checkForUpdates() {
 // Function to show update dialog
 function showUpdateDialog() {
     if (confirm('A new version is available! Would you like to update?')) {
-        updateWorker.postMessage({ type: 'SKIP_WAITING' });
+        if (updateWorker) {
+            updateWorker.postMessage({ type: 'SKIP_WAITING' });
+        }
         window.location.reload();
     }
 }
 
-// Create and update progress bar
-function createProgressBar(titleElement) {
-    progressBar = document.createElement('div');
-    progressBar.style.position = 'absolute';
-    progressBar.style.bottom = '0';
-    progressBar.style.left = '0';
-    progressBar.style.height = '3px';
-    progressBar.style.backgroundColor = '#2563eb';
-    progressBar.style.width = '0';
-    progressBar.style.transition = 'width 0.1s linear';
-    titleElement.style.position = 'relative';
-    titleElement.appendChild(progressBar);
-}
-
 function updateProgress() {
-    if (pressStartTime && progressBar) {
+    if (pressStartTime) {
         const elapsedTime = Date.now() - pressStartTime;
         const progress = Math.min((elapsedTime / PRESS_DURATION) * 100, 100);
-        progressBar.style.width = `${progress}%`;
-        
-        if (elapsedTime < PRESS_DURATION) {
-            requestAnimationFrame(updateProgress);
+        const progressBar = document.querySelector('.progress-bar');
+        if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+            
+            if (elapsedTime < PRESS_DURATION) {
+                requestAnimationFrame(updateProgress);
+            }
         }
     }
 }
 
-function startProgress(titleElement) {
-    if (!progressBar) {
-        createProgressBar(titleElement);
-    }
+function startProgress() {
     pressStartTime = Date.now();
-    progressBar.style.width = '0';
-    updateProgress();
+    const progressBar = document.querySelector('.progress-bar');
+    if (progressBar) {
+        progressBar.style.width = '0';
+        updateProgress();
+    }
 }
 
 function resetProgress() {
+    const progressBar = document.querySelector('.progress-bar');
     if (progressBar) {
         progressBar.style.width = '0';
     }
@@ -698,18 +704,33 @@ function resetProgress() {
 
 // Add event listeners
 document.addEventListener('DOMContentLoaded', () => {
-    const titleElement = document.querySelector('.card-title');
+    // Make sure page-title exists and has required classes
+    const titleElement = document.querySelector('.page-title');
+    if (titleElement) {
+        if (!titleElement.classList.contains('interactive-title')) {
+            titleElement.classList.add('interactive-title');
+        }
+        
+        // Make sure progress bar exists
+        if (!titleElement.querySelector('.progress-bar')) {
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            titleElement.appendChild(progressBar);
+        }
+    }
+
     let isPressed = false;
     
     // Touch events for mobile
     titleElement.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Prevent default touch behavior
         isPressed = true;
-        startProgress(titleElement);
+        startProgress();
         pressTimer = setTimeout(() => {
             checkForUpdates();
             resetProgress();
         }, PRESS_DURATION);
-    });
+    }, { passive: false });
     
     titleElement.addEventListener('touchend', () => {
         isPressed = false;
@@ -719,15 +740,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Mouse events for desktop
     titleElement.addEventListener('mousedown', (e) => {
-        // Check if it's a right-click (button 2)
-        if (e.button === 2) {
+        if (e.button === 2) { // Right click
             e.preventDefault();
             checkForUpdates();
             return;
         }
         
         isPressed = true;
-        startProgress(titleElement);
+        startProgress();
         pressTimer = setTimeout(() => {
             checkForUpdates();
             resetProgress();
@@ -748,7 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Prevent context menu on right-click
+    // Prevent context menu
     titleElement.addEventListener('contextmenu', (e) => {
         e.preventDefault();
     });
@@ -761,10 +781,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Listen for service worker updates
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-    });
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            window.location.reload();
+        });
+    }
 });
 </script>
 </body>
+</html>
