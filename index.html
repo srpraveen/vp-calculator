@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="VP">
+    <meta name="description" content="VP Corrugation Calculator">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS Icons -->
+    <link rel="apple-touch-icon" href="images/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/icon-192x192.png">
+    <title>Corrugation Calculator</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f9fafb;
+        }
+
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .space-y-2 {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .result {
+            background: #eff6ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+
+        .result p {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        button.add-roll {
+            background: #3b82f6;
+        }
+
+        button.calculate {
+            background: #22c55e;
+            font-size: 1.125rem;
+            padding: 16px;
+        }
+
+        .saved-calculations {
+            margin-top: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            padding: 4px 8px;
+            width: auto;
+        }
+		/* Add these new styles */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+        }
+
+        .tab-button {
+            padding: 8px 16px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0;
+            width: auto;
+        }
+
+        .tab-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+    </style>
+</head>
+<body>
+<!-- Top Paper Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Top Paper</h2>
+            </div>
+            <div class="card-content">
+                <div class="grid">
+                    <div class="space-y-2">
+                        <label>Reel No</label>
+                        <input type="text" id="topReelNo">
+                    </div>
+                    <div class="space-y-2">
+                        <label>GSM</label>
+                        <select id="topGsm">
+                            <option value="100">100</option>
+                            <option value="120">120</option>
+                            <option value="140">140</option>
+                            <option value="150">150</option>
+                            <option value="180">180</option>
+                            <option value="200">200</option>
+                            <option value="220">220</option>
+                            <option value="240">240</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label>Initial Weight (kg)</label>
+                        <input type="number" id="topInitialWeight" step="0.01">
+                    </div>
+                    <div class="space-y-2">
+                        <label>Reel Size</label>
+                        <input type="number" id="topReelSize" step="0.01">
+                    </div>
+                </div>
+                <div class="result">
+                    <p>Final Weight: <span id="topFinalWeight">0.00</span> kg</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fluting Medium Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Fluting Medium</h2>
+            </div>
+            <div class="card-content">
+                <div class="grid">
+                    <div class="space-y-2">
+                        <label>Reel No</label>
+                        <input type="text" id="flutingReelNo">
+                    </div>
+                    <div class="space-y-2">
+                        <label>GSM</label>
+                        <select id="flutingGsm">
+                            <option value="100">100</option>
+                            <option value="120">120</option>
+                            <option value="140">140</option>
+                            <option value="150">150</option>
+                            <option value="180">180</option>
+                            <option value="200">200</option>
+                            <option value="220">220</option>
+                            <option value="240">240</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label>Initial Weight (kg)</label>
+                        <input type="number" id="flutingInitialWeight" step="0.01">
+                    </div>
+                    <div class="space-y-2">
+                        <label>Reel Size</label>
+                        <input type="number" id="flutingReelSize" step="0.01">
+                    </div>
+                </div>
+                <div class="result">
+                    <p>Final Weight: <span id="flutingFinalWeight">0.00</span> kg</p>
+                </div>
+            </div>
+        </div>
+    <div class="container">
+	<!-- Sheet Calculation Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Sheet Calculation</h2>
+            </div>
+            <div class="card-content">
+                <div class="grid">
+                    <div class="space-y-2">
+                        <label>Cutting Size</label>
+                        <input type="number" id="cuttingSize" step="0.01">
+                    </div>
+                    <div class="space-y-2">
+                        <label>Number of Sheets</label>
+                        <input type="number" id="numSheets" step="1">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Roll Weights Card -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Roll Weights</h2>
+            </div>
+            <div class="card-content">
+                <div id="rollWeightsContainer">
+                    <!-- Roll weights will be dynamically added here -->
+                </div>
+                <button class="add-roll" onclick="addRollWeight()">Add Roll</button>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <button class="calculate" onclick="calculateFinalWeights()">Calculate Weights</button>
+
+        <!-- Save Button -->
+        <button onclick="saveCalculation()">Save Calculation</button>
+
+        <!-- Saved Calculations -->
+		<!-- Saved Calculations -->
+        <div class="card saved-calculations">
+            <div class="card-header">
+                <h2 class="card-title">Saved Calculations</h2>
+            </div>
+            <div class="card-content">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="showTab('summary')">Summary View</button>
+                    <button class="tab-button" onclick="showTab('detailed')">Detailed View</button>
+                </div>
+                <div id="summaryTab" class="tab-content active">
+                    <div id="savedCalculationsTable"></div>
+                </div>
+                <div id="detailedTab" class="tab-content">
+                    <div id="savedCalculationsDetailed"></div>
+                </div>
+            </div>
+        </div>
+          <!-- This closes the container div -->
+<script>
+        // State management
+        let rollWeights = [''];
+        let savedCalculations = JSON.parse(localStorage.getItem('savedCalculations') || '[]');
+
+        // Initialize roll weights
+        renderRollWeights();
+        renderSavedCalculations();
+
+        function addRollWeight() {
+            rollWeights.push('');
+            renderRollWeights();
+        }
+
+        function renderRollWeights() {
+            const container = document.getElementById('rollWeightsContainer');
+            container.innerHTML = rollWeights.map((weight, index) => `
+                <div class="space-y-2">
+                    <label>Roll ${index + 1} Weight (kg)</label>
+                    <input 
+                        type="number" 
+                        step="0.01" 
+                        value="${weight}"
+                        onchange="updateRollWeight(${index}, this.value)"
+                    >
+                </div>
+            `).join('');
+        }
+
+        function updateRollWeight(index, value) {
+            rollWeights[index] = value;
+        }
+
+        function calculateSingleSheetWeights() {
+            const topReelSize = parseFloat(document.getElementById('topReelSize').value) || 0;
+            const topGsm = parseFloat(document.getElementById('topGsm').value) || 0;
+            const fluteReelSize = parseFloat(document.getElementById('flutingReelSize').value) || 0;
+            const fluteGsm = parseFloat(document.getElementById('flutingGsm').value) || 0;
+
+            const a = topReelSize ? (topReelSize * 39.4 * topGsm) / 1550000 : 0;
+            const b = fluteReelSize ? (fluteReelSize * 39.4 * fluteGsm * 1.4) / 1550000 : 0;
+
+            return { a, b };
+        }
+
+        function calculateSheetsFromRoll(rollWeight) {
+            const g1 = parseFloat(document.getElementById('topGsm').value) || 0;
+            const g2 = parseFloat(document.getElementById('flutingGsm').value) || 0;
+            const l = parseFloat(document.getElementById('topReelSize').value) || 0;
+
+            if (!l || !g1) return 0;
+
+            const denominator = g2 ? (g1 + g2 * 1.4) : g1;
+            return (rollWeight * 1550000) / (l * 39.4 * denominator);
+        }
+
+        function calculateRegularSheetWeights() {
+            const cuttingSize = parseFloat(document.getElementById('cuttingSize').value) || 0;
+            const numSheets = parseFloat(document.getElementById('numSheets').value) || 0;
+            const topReelSize = parseFloat(document.getElementById('topReelSize').value) || 0;
+            const topGsm = parseFloat(document.getElementById('topGsm').value) || 0;
+            const fluteReelSize = parseFloat(document.getElementById('flutingReelSize').value) || 0;
+            const fluteGsm = parseFloat(document.getElementById('flutingGsm').value) || 0;
+
+            let topWeight = 0;
+            let fluteWeight = 0;
+
+            if (cuttingSize && numSheets) {
+                if (topReelSize && topGsm) {
+                    topWeight = (topReelSize * cuttingSize * topGsm) / 1550000 * numSheets;
+                }
+
+                if (fluteReelSize && fluteGsm) {
+                    fluteWeight = (fluteReelSize * cuttingSize * fluteGsm * 1.4) / 1550000 * numSheets;
+                }
+            }
+
+            return { topWeight, fluteWeight };
+        }
+
+        function calculateRollWeights() {
+            const { a, b } = calculateSingleSheetWeights();
+            let topWeight = 0;
+            let fluteWeight = 0;
+
+            rollWeights.forEach(weight => {
+                if (weight) {
+                    const numSheets = calculateSheetsFromRoll(parseFloat(weight));
+                    topWeight += a * numSheets;
+                    fluteWeight += b * numSheets;
+                }
+            });
+
+            return { topWeight, fluteWeight };
+        }
+
+        function calculateFinalWeights() {
+            const regularWeights = calculateRegularSheetWeights();
+            const rollWeights = calculateRollWeights();
+
+            const topInitialWeight = parseFloat(document.getElementById('topInitialWeight').value) || 0;
+            const fluteInitialWeight = parseFloat(document.getElementById('flutingInitialWeight').value) || 0;
+
+            const topFinalWeight = topInitialWeight - (regularWeights.topWeight + rollWeights.topWeight);
+            const fluteFinalWeight = fluteInitialWeight - (regularWeights.fluteWeight + rollWeights.fluteWeight);
+
+            document.getElementById('topFinalWeight').textContent = topFinalWeight.toFixed(2);
+            document.getElementById('flutingFinalWeight').textContent = fluteFinalWeight.toFixed(2);
+        }
+    function saveCalculation() {
+            const calculation = {
+                id: Date.now(),
+                timestamp: new Date().toLocaleString(),
+                topPaper: {
+                    reelNo: document.getElementById('topReelNo').value,
+                    gsm: document.getElementById('topGsm').value,
+                    initialWeight: document.getElementById('topInitialWeight').value,
+                    reelSize: document.getElementById('topReelSize').value,
+                    finalWeight: document.getElementById('topFinalWeight').textContent
+                },
+                flutingMedium: {
+                    reelNo: document.getElementById('flutingReelNo').value,
+                    gsm: document.getElementById('flutingGsm').value,
+                    initialWeight: document.getElementById('flutingInitialWeight').value,
+                    reelSize: document.getElementById('flutingReelSize').value,
+                    finalWeight: document.getElementById('flutingFinalWeight').textContent
+                },
+                sheetCalc: {
+                    cuttingSize: document.getElementById('cuttingSize').value,
+                    numSheets: document.getElementById('numSheets').value
+                },
+                rollWeights: [...rollWeights]
+            };
+
+            savedCalculations.unshift(calculation);
+            localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+            renderSavedCalculations();
+        }
+
+        function deleteCalculation(id) {
+            const isConfirmed = confirm("Are you sure you want to delete this calculation?");
+            
+            if (isConfirmed) {
+                savedCalculations = savedCalculations.filter(calc => calc.id !== id);
+                localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+                renderSavedCalculations();
+            }
+        }
+        function renderSavedCalculations() {
+           renderSummaryView();
+           renderDetailedView();
+        }
+        function renderSummaryView() {
+            const container = document.getElementById('savedCalculationsTable');
+            if (savedCalculations.length === 0) {
+                container.innerHTML = '<p>No saved calculations</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>Details</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${savedCalculations.map(calc => `
+                            <tr>
+                                <td>${calc.timestamp}</td>
+                                <td>
+                                    Top Paper: ${calc.topPaper.reelNo} (${calc.topPaper.gsm} GSM)<br>
+                                    Final Weight: ${calc.topPaper.finalWeight} kg<br>
+                                    Fluting: ${calc.flutingMedium.reelNo} (${calc.flutingMedium.gsm} GSM)<br>
+                                    Final Weight: ${calc.flutingMedium.finalWeight} kg
+                                </td>
+                                <td>
+                                    <button class="delete-btn" onclick="deleteCalculation(${calc.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+		function showTab(tabName) {
+            // Update button states
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Activate selected tab
+            if (tabName === 'summary') {
+                document.querySelector('#summaryTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[0].classList.add('active');
+            } else {
+                document.querySelector('#detailedTab').classList.add('active');
+                document.querySelectorAll('.tab-button')[1].classList.add('active');
+            }
+        }
+
+        // Add new detailed view rendering function
+        function renderDetailedView() {
+            const container = document.getElementById('savedCalculationsDetailed');
+            if (savedCalculations.length === 0) {
+                container.innerHTML = '<p>No saved calculations</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date/Time</th>
+                            <th>Top Paper</th>
+                            <th>Fluting Medium</th>
+                            <th>Sheet Details</th>
+                            <th>Roll Weights</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${savedCalculations.map(calc => `
+                            <tr>
+                                <td>${calc.timestamp}</td>
+                                <td>
+                                    Reel No: ${calc.topPaper.reelNo}<br>
+                                    GSM: ${calc.topPaper.gsm}<br>
+                                    Reel Size: ${calc.topPaper.reelSize}<br>
+                                    Initial Weight: ${calc.topPaper.initialWeight} kg<br>
+                                    Final Weight: ${calc.topPaper.finalWeight} kg
+                                </td>
+                                <td>
+                                    Reel No: ${calc.flutingMedium.reelNo}<br>
+                                    GSM: ${calc.flutingMedium.gsm}<br>
+                                    Reel Size: ${calc.flutingMedium.reelSize}<br>
+                                    Initial Weight: ${calc.flutingMedium.initialWeight} kg<br>
+                                    Final Weight: ${calc.flutingMedium.finalWeight} kg
+                                </td>
+                                <td>
+                                    Cutting Size: ${calc.sheetCalc.cuttingSize}<br>
+                                    Number of Sheets: ${calc.sheetCalc.numSheets}
+                                </td>
+                                <td>
+                                    ${calc.rollWeights.map((weight, index) => 
+                                        `Roll ${index + 1}: ${weight} kg`).join('<br>')}
+                                </td>
+                                <td>
+                                    <button class="delete-btn" onclick="deleteCalculation(${calc.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+	</script>
+	<script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('ServiceWorker registered:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
