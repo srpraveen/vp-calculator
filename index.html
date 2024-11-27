@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<!-- PWA Meta Tags -->
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -20,19 +20,7 @@
     <link rel="icon" type="image/png" href="images/icon-192x192.png">
     <title>Corrugation Calculator</title>
     <style>
-	  .page-title {
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #2563eb, #3b82f6);
-            color: white;
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }  
+        /* Base Styles */
         body {
             font-family: system-ui, -apple-system, sans-serif;
             margin: 0;
@@ -45,6 +33,47 @@
             margin: 0 auto;
         }
 
+        /* Title and Progress Bar Styles */
+        .page-title {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #2563eb, #3b82f6);
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .interactive-title {
+            position: relative;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            padding: 8px;
+            transition: opacity 0.3s ease;
+        }
+
+        .interactive-title:active {
+            opacity: 0.8;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.9);
+            width: 0;
+            transition: width 0.1s linear;
+            border-radius: 2px;
+        }
+
+        /* Card Styles */
         .card {
             background: white;
             border-radius: 8px;
@@ -70,6 +99,7 @@
             padding: 20px;
         }
 
+        /* Form Layout */
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -80,11 +110,13 @@
             margin-bottom: 16px;
         }
 
+        /* Form Elements */
         label {
             display: block;
             font-size: 0.875rem;
             font-weight: 500;
             margin-bottom: 4px;
+            color: #374151;
         }
 
         input, select {
@@ -95,6 +127,7 @@
             font-size: 0.875rem;
         }
 
+        /* Result Display */
         .result {
             background: #eff6ff;
             padding: 12px;
@@ -107,124 +140,16 @@
             font-size: 1.125rem;
             font-weight: 600;
         }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 8px;
-        }
-
-        button:hover {
-            background: #1d4ed8;
-        }
-
-        button.add-roll {
-            background: #3b82f6;
-        }
-
-        button.calculate {
-            background: #22c55e;
-            font-size: 1.125rem;
-            padding: 16px;
-        }
-
-        .saved-calculations {
-            margin-top: 24px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 8px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        th {
-            background: #f8fafc;
-            font-weight: 600;
-        }
-
-        .delete-btn {
-            background: #ef4444;
-            padding: 4px 8px;
-            width: auto;
-        }
-		/* Add these new styles */
-        .tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 16px;
-        }
-
-        .tab-button {
-            padding: 8px 16px;
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            cursor: pointer;
-            margin: 0;
-            width: auto;
-        }
-
-        .tab-button.active {
-            background: #2563eb;
-            color: white;
-            border-color: #2563eb;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-    </style>
-	<style>
-        .interactive-title {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    padding: 8px;
-    transition: opacity 0.3s ease;
-}
-
-.interactive-title:active {
-    opacity: 0.8;  /* Reduces opacity when pressed */
-}
-
-.progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;  /* Slightly thicker */
-    background-color: rgba(255, 255, 255, 0.9);  /* White with slight transparency */
-    width: 0;
-    transition: width 0.1s linear;
-    border-radius: 2px;  /* Slightly rounded edges */
-}
-    </style>
+</style>
 </head>
 <body>
-	<div class="container">
-        <!-- Replace your existing page title div with this -->
+    <div class="container">
         <div class="page-title interactive-title">
             Corrugation Calculator
             <div class="progress-bar"></div>
         </div>
-<!-- Top Paper Card -->
+
+        <!-- Top Paper Card -->
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">Top Paper</h2>
@@ -262,8 +187,7 @@
                 </div>
             </div>
         </div>
-
-        <!-- Fluting Medium Card -->
+		<!-- Fluting Medium Card -->
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">Fluting Medium</h2>
@@ -301,8 +225,8 @@
                 </div>
             </div>
         </div>
-    <div class="container">
-	<!-- Sheet Calculation Card -->
+
+        <!-- Sheet Calculation Card -->
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">Sheet Calculation</h2>
@@ -334,295 +258,156 @@
             </div>
         </div>
 
-        <!-- Calculate Button -->
+        <!-- Action Buttons -->
         <button class="calculate" onclick="calculateFinalWeights()">Calculate Weights</button>
-
-        <!-- Save Button -->
         <button onclick="saveCalculation()">Save Calculation</button>
 
         <!-- Saved Calculations -->
-		<!-- Saved Calculations -->
         <div class="card saved-calculations">
             <div class="card-header">
                 <h2 class="card-title">Saved Calculations</h2>
             </div>
             <div class="card-content">
-                <div class="tabs">
-                    <button class="tab-button active" onclick="showTab('summary')">Summary View</button>
-                    <button class="tab-button" onclick="showTab('detailed')">Detailed View</button>
-                </div>
-                <div id="summaryTab" class="tab-content active">
-                    <div id="savedCalculationsTable"></div>
-                </div>
-                <div id="detailedTab" class="tab-content">
-                    <div id="savedCalculationsDetailed"></div>
-                </div>
+                <div id="savedCalculationsContainer"></div>
             </div>
         </div>
-          <!-- This closes the container div -->
-<script>
-        // State management
-        let rollWeights = [''];
-        let savedCalculations = JSON.parse(localStorage.getItem('savedCalculations') || '[]');
+    </div>
 
-        // Initialize roll weights
-        renderRollWeights();
-        renderSavedCalculations();
-
-        function addRollWeight() {
-            rollWeights.push('');
-            renderRollWeights();
+    <style>
+        /* Button Styles */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
         }
 
-        function renderRollWeights() {
-            const container = document.getElementById('rollWeightsContainer');
-            container.innerHTML = rollWeights.map((weight, index) => `
-                <div class="space-y-2">
-                    <label>Roll ${index + 1} Weight (kg)</label>
-                    <input 
-                        type="number" 
-                        step="0.01" 
-                        value="${weight}"
-                        onchange="updateRollWeight(${index}, this.value)"
-                    >
-                </div>
-            `).join('');
+        button:hover {
+            background: #1d4ed8;
         }
 
-        function updateRollWeight(index, value) {
-            rollWeights[index] = value;
+        button.add-roll {
+            background: #3b82f6;
         }
 
-        function calculateSingleSheetWeights() {
-            const topReelSize = parseFloat(document.getElementById('topReelSize').value) || 0;
-            const topGsm = parseFloat(document.getElementById('topGsm').value) || 0;
-            const fluteReelSize = parseFloat(document.getElementById('flutingReelSize').value) || 0;
-            const fluteGsm = parseFloat(document.getElementById('flutingGsm').value) || 0;
-
-            const a = topReelSize ? (topReelSize * 39.4 * topGsm) / 1550000 : 0;
-            const b = fluteReelSize ? (fluteReelSize * 39.4 * fluteGsm * 1.4) / 1550000 : 0;
-
-            return { a, b };
+        button.calculate {
+            background: #22c55e;
+            font-size: 1.125rem;
+            padding: 16px;
         }
 
-        function calculateSheetsFromRoll(rollWeight) {
-            const g1 = parseFloat(document.getElementById('topGsm').value) || 0;
-            const g2 = parseFloat(document.getElementById('flutingGsm').value) || 0;
-            const l = parseFloat(document.getElementById('topReelSize').value) || 0;
-
-            if (!l || !g1) return 0;
-
-            const denominator = g2 ? (g1 + g2 * 1.4) : g1;
-            return (rollWeight * 1550000) / (l * 39.4 * denominator);
+        /* Saved Calculations Styles */
+        .calculation-group {
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-bottom: 16px;
         }
 
-        function calculateRegularSheetWeights() {
-            const cuttingSize = parseFloat(document.getElementById('cuttingSize').value) || 0;
-            const numSheets = parseFloat(document.getElementById('numSheets').value) || 0;
-            const topReelSize = parseFloat(document.getElementById('topReelSize').value) || 0;
-            const topGsm = parseFloat(document.getElementById('topGsm').value) || 0;
-            const fluteReelSize = parseFloat(document.getElementById('flutingReelSize').value) || 0;
-            const fluteGsm = parseFloat(document.getElementById('flutingGsm').value) || 0;
+        .calculation-date {
+            background: #f8fafc;
+            padding: 12px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-            let topWeight = 0;
-            let fluteWeight = 0;
+        .calculation-item {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+            display: none;
+        }
 
-            if (cuttingSize && numSheets) {
-                if (topReelSize && topGsm) {
-                    topWeight = (topReelSize * cuttingSize * topGsm) / 1550000 * numSheets;
-                }
+        .calculation-item.show {
+            display: block;
+        }
 
-                if (fluteReelSize && fluteGsm) {
-                    fluteWeight = (fluteReelSize * cuttingSize * fluteGsm * 1.4) / 1550000 * numSheets;
-                }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .detail-section {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 4px;
+        }
+
+        .detail-section h3 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            color: #1f2937;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: #6b7280;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .share-btn {
+            background: #3b82f6;
+            padding: 4px 12px;
+            width: auto;
+        }
+
+        .delete-btn {
+            background: #ef4444;
+            padding: 4px 12px;
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
             }
-
-            return { topWeight, fluteWeight };
-        }
-
-        function calculateRollWeights() {
-            const { a, b } = calculateSingleSheetWeights();
-            let topWeight = 0;
-            let fluteWeight = 0;
-
-            rollWeights.forEach(weight => {
-                if (weight) {
-                    const numSheets = calculateSheetsFromRoll(parseFloat(weight));
-                    topWeight += a * numSheets;
-                    fluteWeight += b * numSheets;
-                }
-            });
-
-            return { topWeight, fluteWeight };
-        }
-
-        function calculateFinalWeights() {
-            const regularWeights = calculateRegularSheetWeights();
-            const rollWeights = calculateRollWeights();
-
-            const topInitialWeight = parseFloat(document.getElementById('topInitialWeight').value) || 0;
-            const fluteInitialWeight = parseFloat(document.getElementById('flutingInitialWeight').value) || 0;
-
-            const topFinalWeight = topInitialWeight - (regularWeights.topWeight + rollWeights.topWeight);
-            const fluteFinalWeight = fluteInitialWeight - (regularWeights.fluteWeight + rollWeights.fluteWeight);
-
-            document.getElementById('topFinalWeight').textContent = topFinalWeight.toFixed(2);
-            document.getElementById('flutingFinalWeight').textContent = fluteFinalWeight.toFixed(2);
-        }
-    function saveCalculation() {
-            const calculation = {
-                id: Date.now(),
-                timestamp: new Date().toLocaleString(),
-                topPaper: {
-                    reelNo: document.getElementById('topReelNo').value,
-                    gsm: document.getElementById('topGsm').value,
-                    initialWeight: document.getElementById('topInitialWeight').value,
-                    reelSize: document.getElementById('topReelSize').value,
-                    finalWeight: document.getElementById('topFinalWeight').textContent
-                },
-                flutingMedium: {
-                    reelNo: document.getElementById('flutingReelNo').value,
-                    gsm: document.getElementById('flutingGsm').value,
-                    initialWeight: document.getElementById('flutingInitialWeight').value,
-                    reelSize: document.getElementById('flutingReelSize').value,
-                    finalWeight: document.getElementById('flutingFinalWeight').textContent
-                },
-                sheetCalc: {
-                    cuttingSize: document.getElementById('cuttingSize').value,
-                    numSheets: document.getElementById('numSheets').value
-                },
-                rollWeights: [...rollWeights]
-            };
-
-            savedCalculations.unshift(calculation);
-            localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
-            renderSavedCalculations();
-        }
-
-        function deleteCalculation(id) {
-            const isConfirmed = confirm("Are you sure you want to delete this calculation?");
             
-            if (isConfirmed) {
-                savedCalculations = savedCalculations.filter(calc => calc.id !== id);
-                localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
-                renderSavedCalculations();
+            .detail-grid {
+                grid-template-columns: 1fr;
             }
         }
-        function renderSavedCalculations() {
-           renderSummaryView();
-           renderDetailedView();
-        }
-        function renderSummaryView() {
-            const container = document.getElementById('savedCalculationsTable');
-            if (savedCalculations.length === 0) {
-                container.innerHTML = '<p>No saved calculations</p>';
-                return;
-            }
+		.calculation-date {
+            display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 12px 16px;
+		}
 
-            container.innerHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date/Time</th>
-                            <th>Details</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${savedCalculations.map(calc => `
-                            <tr>
-                                <td>${calc.timestamp}</td>
-                                <td>
-                                    Top Paper: ${calc.topPaper.reelNo} (${calc.topPaper.gsm} GSM)<br>
-                                    Final Weight: ${calc.topPaper.finalWeight} kg<br>
-                                    Fluting: ${calc.flutingMedium.reelNo} (${calc.flutingMedium.gsm} GSM)<br>
-                                    Final Weight: ${calc.flutingMedium.finalWeight} kg
-                                </td>
-                                <td>
-                                    <button class="delete-btn" onclick="deleteCalculation(${calc.id})">Delete</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-		function showTab(tabName) {
-            // Update button states
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
+		.calculation-date .action-buttons {
+			display: flex;
+			gap: 8px;
+		}
 
-            // Activate selected tab
-            if (tabName === 'summary') {
-                document.querySelector('#summaryTab').classList.add('active');
-                document.querySelectorAll('.tab-button')[0].classList.add('active');
-            } else {
-                document.querySelector('#detailedTab').classList.add('active');
-                document.querySelectorAll('.tab-button')[1].classList.add('active');
-            }
-        }
+		.calculation-date .share-btn,
+		.calculation-date .delete-btn {
+			padding: 4px 8px;
+			font-size: 0.875rem;
+		}
 
-        // Add new detailed view rendering function
-        function renderDetailedView() {
-            const container = document.getElementById('savedCalculationsDetailed');
-            if (savedCalculations.length === 0) {
-                container.innerHTML = '<p>No saved calculations</p>';
-                return;
-            }
-
-            container.innerHTML = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date/Time</th>
-                            <th>Top Paper</th>
-                            <th>Fluting Medium</th>
-                            <th>Sheet Details</th>
-                            <th>Roll Weights</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${savedCalculations.map(calc => `
-                            <tr>
-                                <td>${calc.timestamp}</td>
-                                <td>
-                                    Reel No: ${calc.topPaper.reelNo}<br>
-                                    GSM: ${calc.topPaper.gsm}<br>
-                                    Reel Size: ${calc.topPaper.reelSize}<br>
-                                    Initial Weight: ${calc.topPaper.initialWeight} kg<br>
-                                    Final Weight: ${calc.topPaper.finalWeight} kg
-                                </td>
-                                <td>
-                                    Reel No: ${calc.flutingMedium.reelNo}<br>
-                                    GSM: ${calc.flutingMedium.gsm}<br>
-                                    Reel Size: ${calc.flutingMedium.reelSize}<br>
-                                    Initial Weight: ${calc.flutingMedium.initialWeight} kg<br>
-                                    Final Weight: ${calc.flutingMedium.finalWeight} kg
-                                </td>
-                                <td>
-                                    Cutting Size: ${calc.sheetCalc.cuttingSize}<br>
-                                    Number of Sheets: ${calc.sheetCalc.numSheets}
-                                </td>
-                                <td>
-                                    ${calc.rollWeights.map((weight, index) => 
-                                        `Roll ${index + 1}: ${weight} kg`).join('<br>')}
-                                </td>
-                                <td>
-                                    <button class="delete-btn" onclick="deleteCalculation(${calc.id})">Delete</button>
-                                </td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
-	</script>
-<script>
+		.calculation-date button:hover {
+			opacity: 0.9;
+		}
+    </style>
+	<script>
 // Update checker and installer
 let pressTimer;
 let updateWorker = null;
@@ -700,76 +485,438 @@ function resetProgress() {
     pressStartTime = null;
 }
 
-// Add event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Make sure page-title exists and has required classes
-    const titleElement = document.querySelector('.page-title');
-    if (titleElement) {
-        if (!titleElement.classList.contains('interactive-title')) {
-            titleElement.classList.add('interactive-title');
+// Calculator core functions
+let rollWeights = [''];
+
+function addRollWeight() {
+    rollWeights.push('');
+    renderRollWeights();
+}
+
+function renderRollWeights() {
+    const container = document.getElementById('rollWeightsContainer');
+    container.innerHTML = rollWeights.map((weight, index) => `
+        <div class="space-y-2">
+            <label>Roll ${index + 1} Weight (kg)</label>
+            <input 
+                type="number" 
+                step="0.01" 
+                value="${weight}"
+                onchange="updateRollWeight(${index}, this.value)"
+            >
+        </div>
+    `).join('');
+}
+
+function updateRollWeight(index, value) {
+    rollWeights[index] = value;
+}
+
+function calculateSingleSheetWeights() {
+    const topReelSize = parseFloat(document.getElementById('topReelSize').value) || 0;
+    const topGsm = parseFloat(document.getElementById('topGsm').value) || 0;
+    const fluteReelSize = parseFloat(document.getElementById('flutingReelSize').value) || 0;
+    const fluteGsm = parseFloat(document.getElementById('flutingGsm').value) || 0;
+
+    const a = topReelSize ? (topReelSize * 39.4 * topGsm) / 1550000 : 0;
+    const b = fluteReelSize ? (fluteReelSize * 39.4 * fluteGsm * 1.4) / 1550000 : 0;
+
+    return { a, b };
+}
+
+function calculateSheetsFromRoll(rollWeight) {
+    const g1 = parseFloat(document.getElementById('topGsm').value) || 0;
+    const g2 = parseFloat(document.getElementById('flutingGsm').value) || 0;
+    const l = parseFloat(document.getElementById('topReelSize').value) || 0;
+
+    if (!l || !g1) return 0;
+
+    const denominator = g2 ? (g1 + g2 * 1.4) : g1;
+    return (rollWeight * 1550000) / (l * 39.4 * denominator);
+}
+
+function calculateRegularSheetWeights() {
+    const cuttingSize = parseFloat(document.getElementById('cuttingSize').value) || 0;
+    const numSheets = parseFloat(document.getElementById('numSheets').value) || 0;
+    const topReelSize = parseFloat(document.getElementById('topReelSize').value) || 0;
+    const topGsm = parseFloat(document.getElementById('topGsm').value) || 0;
+    const fluteReelSize = parseFloat(document.getElementById('flutingReelSize').value) || 0;
+    const fluteGsm = parseFloat(document.getElementById('flutingGsm').value) || 0;
+
+    let topWeight = 0;
+    let fluteWeight = 0;
+
+    if (cuttingSize && numSheets) {
+        if (topReelSize && topGsm) {
+            topWeight = (topReelSize * cuttingSize * topGsm) / 1550000 * numSheets;
         }
-        
-        // Make sure progress bar exists
-        if (!titleElement.querySelector('.progress-bar')) {
-            const progressBar = document.createElement('div');
-            progressBar.className = 'progress-bar';
-            titleElement.appendChild(progressBar);
+
+        if (fluteReelSize && fluteGsm) {
+            fluteWeight = (fluteReelSize * cuttingSize * fluteGsm * 1.4) / 1550000 * numSheets;
         }
     }
 
-    let isPressed = false;
-    
-    // Touch events for mobile
-    titleElement.addEventListener('touchstart', (e) => {
-        e.preventDefault(); // Prevent default touch behavior
-        isPressed = true;
-        startProgress();
-        pressTimer = setTimeout(() => {
-            checkForUpdates();
-            resetProgress();
-        }, PRESS_DURATION);
-    }, { passive: false });
-    
-    titleElement.addEventListener('touchend', () => {
-        isPressed = false;
-        clearTimeout(pressTimer);
-        resetProgress();
-    });
-    
-    // Mouse events for desktop
-    titleElement.addEventListener('mousedown', (e) => {
-        if (e.button === 2) { // Right click
-            e.preventDefault();
-            checkForUpdates();
-            return;
+    return { topWeight, fluteWeight };
+}
+
+function calculateRollWeights() {
+    const { a, b } = calculateSingleSheetWeights();
+    let topWeight = 0;
+    let fluteWeight = 0;
+
+    rollWeights.forEach(weight => {
+        if (weight) {
+            const numSheets = calculateSheetsFromRoll(parseFloat(weight));
+            topWeight += a * numSheets;
+            fluteWeight += b * numSheets;
         }
+    });
+
+    return { topWeight, fluteWeight };
+}
+
+function calculateFinalWeights() {
+    const regularWeights = calculateRegularSheetWeights();
+    const rollWeights = calculateRollWeights();
+
+    const topInitialWeight = parseFloat(document.getElementById('topInitialWeight').value) || 0;
+    const fluteInitialWeight = parseFloat(document.getElementById('flutingInitialWeight').value) || 0;
+
+    const topFinalWeight = topInitialWeight - (regularWeights.topWeight + rollWeights.topWeight);
+    const fluteFinalWeight = fluteInitialWeight - (regularWeights.fluteWeight + rollWeights.fluteWeight);
+
+    document.getElementById('topFinalWeight').textContent = topFinalWeight.toFixed(2);
+    document.getElementById('flutingFinalWeight').textContent = fluteFinalWeight.toFixed(2);
+}
+</script>
+<script>
+// Saved calculations management
+let savedCalculations = JSON.parse(localStorage.getItem('savedCalculations') || '[]');
+
+function saveCalculation() {
+    const calculation = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        timestamp: new Date().toLocaleString(),
+        topPaper: {
+            reelNo: document.getElementById('topReelNo').value,
+            gsm: document.getElementById('topGsm').value,
+            initialWeight: document.getElementById('topInitialWeight').value,
+            reelSize: document.getElementById('topReelSize').value,
+            finalWeight: document.getElementById('topFinalWeight').textContent
+        },
+        flutingMedium: {
+            reelNo: document.getElementById('flutingReelNo').value,
+            gsm: document.getElementById('flutingGsm').value,
+            initialWeight: document.getElementById('flutingInitialWeight').value,
+            reelSize: document.getElementById('flutingReelSize').value,
+            finalWeight: document.getElementById('flutingFinalWeight').textContent
+        },
+        sheetCalc: {
+            cuttingSize: document.getElementById('cuttingSize').value,
+            numSheets: document.getElementById('numSheets').value
+        },
+        rollWeights: [...rollWeights]
+    };
+
+    savedCalculations.unshift(calculation);
+    localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+    renderSavedCalculations();
+}
+
+function deleteCalculation(id) {
+    if (confirm('Are you sure you want to delete this calculation?')) {
+        savedCalculations = savedCalculations.filter(calc => calc.id !== id);
+        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+        renderSavedCalculations();
+    }
+}
+
+function groupCalculationsByDate() {
+    const groups = {};
+    savedCalculations.forEach(calc => {
+        if (!groups[calc.date]) {
+            groups[calc.date] = [];
+        }
+        groups[calc.date].push(calc);
+    });
+    return groups;
+}
+
+function formatCalculationText(calc) {
+    return `Calculation Details (${calc.date})
+
+Top Paper:
+- Reel No: ${calc.topPaper.reelNo}
+- GSM: ${calc.topPaper.gsm}
+- Reel Size: ${calc.topPaper.reelSize}
+- Initial Weight: ${calc.topPaper.initialWeight} kg
+- Final Weight: ${calc.topPaper.finalWeight} kg
+
+Fluting Medium:
+- Reel No: ${calc.flutingMedium.reelNo}
+- GSM: ${calc.flutingMedium.gsm}
+- Reel Size: ${calc.flutingMedium.reelSize}
+- Initial Weight: ${calc.flutingMedium.initialWeight} kg
+- Final Weight: ${calc.flutingMedium.finalWeight} kg
+
+Sheet Details:
+- Cutting Size: ${calc.sheetCalc.cuttingSize}
+- Number of Sheets: ${calc.sheetCalc.numSheets}
+
+Roll Weights:
+${calc.rollWeights.map((weight, index) => `Roll ${index + 1}: ${weight} kg`).join('\n')}`;
+}
+
+async function shareCalculation(calcData) {
+    const calc = JSON.parse(calcData);
+    const text = formatCalculationText(calc);
+    
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Corrugation Calculation',
+                text: text
+            });
+        } catch (err) {
+            fallbackShare(text);
+        }
+    } else {
+        fallbackShare(text);
+    }
+}
+
+function deleteCalculation(id, buttonElement) {
+    if (confirm('Are you sure you want to delete this calculation?')) {
+        // Find the calculation group element
+        const calculationItem = buttonElement.closest('.calculation-item');
+        const calculationGroup = calculationItem.closest('.calculation-group');
+        const isExpanded = calculationItem.classList.contains('show');
         
-        isPressed = true;
-        startProgress();
-        pressTimer = setTimeout(() => {
-            checkForUpdates();
-            resetProgress();
-        }, PRESS_DURATION);
+        // Remove the calculation
+        savedCalculations = savedCalculations.filter(calc => calc.id !== id);
+        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+        
+        // Re-render but maintain expansion state
+        renderSavedCalculations();
+        
+        if (isExpanded) {
+            // Find and expand the same date group
+            const dateHeader = calculationGroup.querySelector('.calculation-date');
+            const newGroup = document.querySelector(`.calculation-date[data-date="${dateHeader.dataset.date}"]`);
+            if (newGroup) {
+                toggleCalculations(newGroup);
+            }
+        }
+    }
+}
+
+async function shareCalculationsForDate(date) {
+    const calculations = savedCalculations.filter(calc => calc.date === date);
+    let text = `Calculations for ${date}\n\n`;
+    calculations.forEach((calc, index) => {
+        text += `--- Calculation ${calculations.length - index} ---\n`;
+        text += formatCalculationText(calc) + '\n\n';
     });
     
-    titleElement.addEventListener('mouseup', () => {
-        isPressed = false;
-        clearTimeout(pressTimer);
-        resetProgress();
-    });
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: `Corrugation Calculations - ${date}`,
+                text: text
+            });
+        } catch (err) {
+            fallbackShare(text);
+        }
+    } else {
+        fallbackShare(text);
+    }
+}
+
+function deleteCalculationsForDate(date) {
+    if (confirm(`Are you sure you want to delete all calculations for ${date}?`)) {
+        savedCalculations = savedCalculations.filter(calc => calc.date !== date);
+        localStorage.setItem('savedCalculations', JSON.stringify(savedCalculations));
+        renderSavedCalculations();
+    }
+}
+
+function renderSavedCalculations() {
+    const container = document.getElementById('savedCalculationsContainer');
+    const groups = groupCalculationsByDate();
     
-    titleElement.addEventListener('mouseleave', () => {
-        if (isPressed) {
+    if (Object.keys(groups).length === 0) {
+        container.innerHTML = '<p>No saved calculations</p>';
+        return;
+    }
+
+    const html = Object.entries(groups).map(([date, calculations]) => `
+        <div class="calculation-group">
+            <div class="calculation-date" data-date="${date}" onclick="toggleCalculations(this)">
+                <span>${date} (${calculations.length} calculation${calculations.length > 1 ? 's' : ''})</span>
+                <div class="action-buttons">
+                    <button class="share-btn" onclick="event.stopPropagation(); shareCalculationsForDate('${date}')" data-calculations='${JSON.stringify(calculations).replace(/'/g, "&apos;")}'>Share All</button>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteCalculationsForDate('${date}')">Delete All</button>
+                </div>
+            </div>
+            ${calculations.map((calc, index) => `
+                <div class="calculation-item">
+                    <h3>Calculation #${calculations.length - index}</h3>
+                    <div class="detail-grid">
+                        <div class="detail-section">
+                            <h3>Top Paper</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Reel No:</span>
+                                <span>${calc.topPaper.reelNo}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">GSM:</span>
+                                <span>${calc.topPaper.gsm}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Reel Size:</span>
+                                <span>${calc.topPaper.reelSize}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Initial Weight:</span>
+                                <span>${calc.topPaper.initialWeight} kg</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Final Weight:</span>
+                                <span>${calc.topPaper.finalWeight} kg</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h3>Fluting Medium</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Reel No:</span>
+                                <span>${calc.flutingMedium.reelNo}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">GSM:</span>
+                                <span>${calc.flutingMedium.gsm}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Reel Size:</span>
+                                <span>${calc.flutingMedium.reelSize}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Initial Weight:</span>
+                                <span>${calc.flutingMedium.initialWeight} kg</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Final Weight:</span>
+                                <span>${calc.flutingMedium.finalWeight} kg</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h3>Sheet Details</h3>
+                            <div class="detail-item">
+                                <span class="detail-label">Cutting Size:</span>
+                                <span>${calc.sheetCalc.cuttingSize}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Number of Sheets:</span>
+                                <span>${calc.sheetCalc.numSheets}</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-section">
+                            <h3>Roll Weights</h3>
+                            ${calc.rollWeights.map((weight, idx) => weight ? `
+                                <div class="detail-item">
+                                    <span class="detail-label">Roll ${idx + 1}:</span>
+                                    <span>${weight} kg</span>
+                                </div>
+                            ` : '').join('')}
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="share-btn" data-calculation='${JSON.stringify(calc).replace(/'/g, "&apos;")}' onclick="shareCalculation(this.dataset.calculation)">Share</button>
+                        <button class="delete-btn" onclick="deleteCalculation(${calc.id}, this)">Delete</button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `).join('');
+
+    container.innerHTML = html;
+}
+</script>
+<script>
+// Toggle functionality for saved calculations
+function toggleCalculations(element) {
+    const items = element.parentElement.querySelectorAll('.calculation-item');
+    items.forEach(item => {
+        item.classList.toggle('show');
+    });
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize saved calculations
+    renderSavedCalculations();
+    renderRollWeights();
+
+    // Update checker event listeners
+    const titleElement = document.querySelector('.page-title');
+    if (titleElement) {
+        let isPressed = false;
+        
+        // Touch events for mobile
+        titleElement.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isPressed = true;
+            startProgress();
+            pressTimer = setTimeout(() => {
+                checkForUpdates();
+                resetProgress();
+            }, PRESS_DURATION);
+        }, { passive: false });
+        
+        titleElement.addEventListener('touchend', () => {
             isPressed = false;
             clearTimeout(pressTimer);
             resetProgress();
-        }
-    });
-    
-    // Prevent context menu
-    titleElement.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-    });
+        });
+        
+        // Mouse events for desktop
+        titleElement.addEventListener('mousedown', (e) => {
+            if (e.button === 2) {
+                e.preventDefault();
+                checkForUpdates();
+                return;
+            }
+            
+            isPressed = true;
+            startProgress();
+            pressTimer = setTimeout(() => {
+                checkForUpdates();
+                resetProgress();
+            }, PRESS_DURATION);
+        });
+        
+        titleElement.addEventListener('mouseup', () => {
+            isPressed = false;
+            clearTimeout(pressTimer);
+            resetProgress();
+        });
+        
+        titleElement.addEventListener('mouseleave', () => {
+            if (isPressed) {
+                isPressed = false;
+                clearTimeout(pressTimer);
+                resetProgress();
+            }
+        });
+        
+        // Prevent context menu
+        titleElement.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+    }
     
     // Keyboard shortcut (Ctrl + Shift + U)
     document.addEventListener('keydown', (e) => {
@@ -779,13 +926,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Register Service Worker
+    // Service Worker registration
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.addEventListener('controllerchange', () => {
             window.location.reload();
         });
     }
 });
+
+// Close body and html tags
 </script>
 </body>
 </html>
