@@ -1,5 +1,5 @@
 // First, modify the service worker (sw.js)
-const CACHE_NAME = 'vp-calculator-v3'; // Increment version number
+const CACHE_NAME = 'vp-calculator-v3.1'; // Increment version number
 const ASSETS_TO_CACHE = [
     'index.html',
     'manifest.json',
