@@ -577,13 +577,13 @@ function calculateRollWeights() {
 
 function calculateFinalWeights() {
     const regularWeights = calculateRegularSheetWeights();
-    const rollWeights = calculateRollWeights();
+    const rollWeightsData = calculateRollWeights();
 
     const topInitialWeight = parseFloat(document.getElementById('topInitialWeight').value) || 0;
     const fluteInitialWeight = parseFloat(document.getElementById('flutingInitialWeight').value) || 0;
 
-    const topFinalWeight = topInitialWeight - (regularWeights.topWeight + rollWeights.topWeight);
-    const fluteFinalWeight = fluteInitialWeight - (regularWeights.fluteWeight + rollWeights.fluteWeight);
+    const topFinalWeight = topInitialWeight - (regularWeights.topWeight + rollWeightsData.topWeight);
+    const fluteFinalWeight = fluteInitialWeight - (regularWeights.fluteWeight + rollWeightsData.fluteWeight);
 
     document.getElementById('topFinalWeight').textContent = topFinalWeight.toFixed(2);
     document.getElementById('flutingFinalWeight').textContent = fluteFinalWeight.toFixed(2);
@@ -648,6 +648,9 @@ function groupCalculationsByDate() {
 }
 
 function formatCalculationText(calc) {
+    const topUsed = ((parseFloat(calc.topPaper.initialWeight) || 0) - (parseFloat(calc.topPaper.finalWeight) || 0)).toFixed(2);
+    const flutingUsed = ((parseFloat(calc.flutingMedium.initialWeight) || 0) - (parseFloat(calc.flutingMedium.finalWeight) || 0)).toFixed(2);
+    
     return `Calculation Details (${calc.date})
 
 Top Paper:
@@ -655,6 +658,7 @@ Top Paper:
 - GSM: ${calc.topPaper.gsm}
 - Reel Size: ${calc.topPaper.reelSize}
 - Initial Weight: ${calc.topPaper.initialWeight} kg
+- Used Weight: ${topUsed} kg
 - Final Weight: ${calc.topPaper.finalWeight} kg
 
 Fluting Medium:
@@ -662,6 +666,7 @@ Fluting Medium:
 - GSM: ${calc.flutingMedium.gsm}
 - Reel Size: ${calc.flutingMedium.reelSize}
 - Initial Weight: ${calc.flutingMedium.initialWeight} kg
+- Used Weight: ${flutingUsed} kg
 - Final Weight: ${calc.flutingMedium.finalWeight} kg
 
 Sheet Details:
@@ -759,7 +764,7 @@ function renderSavedCalculations() {
             <div class="calculation-date" data-date="${date}" onclick="toggleCalculations(this)">
                 <span>${date} (${calculations.length} calculation${calculations.length > 1 ? 's' : ''})</span>
                 <div class="action-buttons">
-                    <button class="share-btn" onclick="event.stopPropagation(); shareCalculationsForDate('${date}')" data-calculations='${JSON.stringify(calculations).replace(/'/g, "&apos;")}'>Share All</button>
+                    <button class="share-btn" onclick="event.stopPropagation(); shareCalculationsForDate('${date}')" data-calculations='${JSON.stringify(calculations).replace(/'/g, "'")}'>Share All</button>
                     <button class="delete-btn" onclick="event.stopPropagation(); deleteCalculationsForDate('${date}')">Delete All</button>
                 </div>
             </div>
@@ -786,6 +791,10 @@ function renderSavedCalculations() {
                                 <span>${calc.topPaper.initialWeight} kg</span>
                             </div>
                             <div class="detail-item">
+                                <span class="detail-label">Used Weight:</span>
+                                <span>${((parseFloat(calc.topPaper.initialWeight) || 0) - (parseFloat(calc.topPaper.finalWeight) || 0)).toFixed(2)} kg</span>
+                            </div>
+                            <div class="detail-item">
                                 <span class="detail-label">Final Weight:</span>
                                 <span>${calc.topPaper.finalWeight} kg</span>
                             </div>
@@ -808,6 +817,10 @@ function renderSavedCalculations() {
                             <div class="detail-item">
                                 <span class="detail-label">Initial Weight:</span>
                                 <span>${calc.flutingMedium.initialWeight} kg</span>
+                            </div>
+                             <div class="detail-item">
+                                <span class="detail-label">Used Weight:</span>
+                                <span>${((parseFloat(calc.flutingMedium.initialWeight) || 0) - (parseFloat(calc.flutingMedium.finalWeight) || 0)).toFixed(2)} kg</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Final Weight:</span>
@@ -838,7 +851,7 @@ function renderSavedCalculations() {
                         </div>
                     </div>
                     <div class="action-buttons">
-                        <button class="share-btn" data-calculation='${JSON.stringify(calc).replace(/'/g, "&apos;")}' onclick="shareCalculation(this.dataset.calculation)">Share</button>
+                        <button class="share-btn" data-calculation='${JSON.stringify(calc).replace(/'/g, "'")}' onclick="shareCalculation(this.dataset.calculation)">Share</button>
                         <button class="delete-btn" onclick="deleteCalculation(${calc.id}, this)">Delete</button>
                     </div>
                 </div>
